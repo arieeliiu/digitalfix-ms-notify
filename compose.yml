@@ -1,0 +1,34 @@
+name: digitalfix-notify
+services:
+  notify:
+    build: .
+    restart: unless-stopped
+    stop_grace_period: 60s
+    environment:
+      RABBITMQ_ADDRESSES: ${RABBITMQ_ADDRESSES:-rabbitmq1:5672,rabbitmq2:5672}
+      RABBITMQ_VHOST: ${RABBITMQ_VHOST:-digitalfix}
+      RABBITMQ_USERNAME: ${RABBITMQ_USERNAME:?Configura usuario de aplicacion}
+      RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD:?Configura clave de aplicacion}
+      SMTP_HOST: ${SMTP_HOST:?Configura servidor SMTP}
+      SMTP_PORT: ${SMTP_PORT:-587}
+      SMTP_USERNAME: ${SMTP_USERNAME:-}
+      SMTP_PASSWORD: ${SMTP_PASSWORD:-}
+      SMTP_AUTH: ${SMTP_AUTH:-true}
+      SMTP_STARTTLS: ${SMTP_STARTTLS:-true}
+      SMTP_SSL: ${SMTP_SSL:-false}
+      SMTP_FROM: ${SMTP_FROM:?Configura remitente autorizado}
+    volumes:
+      - notify-data:/data
+    networks:
+      - messaging
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+volumes:
+  notify-data:
+networks:
+  messaging:
+    external: true
+    name: digitalfix-messaging
