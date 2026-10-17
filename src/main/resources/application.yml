@@ -1,0 +1,53 @@
+spring:
+  application:
+    name: digitalfix-ms-notify
+  main:
+    web-application-type: none
+  rabbitmq:
+    addresses: ${RABBITMQ_ADDRESSES:rabbitmq1:5672,rabbitmq2:5672}
+    virtual-host: ${RABBITMQ_VHOST:digitalfix}
+    username: ${RABBITMQ_USERNAME}
+    password: ${RABBITMQ_PASSWORD}
+    listener:
+      simple:
+        acknowledge-mode: manual
+        prefetch: 1
+        concurrency: 1
+        max-concurrency: 1
+        default-requeue-rejected: false
+        missing-queues-fatal: true
+        retry:
+          enabled: false
+  mail:
+    host: ${SMTP_HOST}
+    port: ${SMTP_PORT:587}
+    username: ${SMTP_USERNAME:}
+    password: ${SMTP_PASSWORD:}
+    properties:
+      mail.smtp.auth: ${SMTP_AUTH:true}
+      mail.smtp.starttls.enable: ${SMTP_STARTTLS:true}
+      mail.smtp.starttls.required: ${SMTP_STARTTLS:true}
+      mail.smtp.ssl.enable: ${SMTP_SSL:false}
+      mail.smtp.connectiontimeout: 5000
+      mail.smtp.timeout: 10000
+      mail.smtp.writetimeout: 10000
+notify:
+  storage: ${NOTIFY_STORAGE:/data}
+  font: ${NOTIFY_FONT:/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf}
+  from: ${SMTP_FROM}
+  rabbit:
+    direct: cmd.direct
+    topic: cmd.topic
+    dlx: cmd.dead.dlx
+    email:
+      queue: q.cmd.email
+      dlq: q.cmd.email.dlq
+      direct-key: email.send
+      topic-key: email.*
+      dead-key: email.dead
+    dispatch:
+      queue: q.cmd.dispatch
+      dlq: q.cmd.dispatch.dlq
+      direct-key: dispatch.ticket
+      topic-key: dispatch.#
+      dead-key: dispatch.dead
