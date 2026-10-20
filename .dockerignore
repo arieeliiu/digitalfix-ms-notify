@@ -1,5 +1,10 @@
-.git
-.env*
-target
-data
-evidencias-locales
+# Copiar como ".dockerignore" en la raíz de cada repo
+target/
+.git/
+.gitignore
+.idea/
+.vscode/
+*.iml
+.env
+*.env
+README.md

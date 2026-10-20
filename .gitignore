@@ -24,3 +24,4 @@ evidencias-locales/
 *.log
 .idea/
 __pycache__/
+*.env
